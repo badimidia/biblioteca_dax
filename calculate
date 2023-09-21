@@ -1,0 +1,68 @@
+//cALCULATE COM sum
+//===================================================================================================
+total bbl/d sem filtro = CALCULATE(sum(BD_PRODUCAO[Produção Petróleo (bbl/d)]),BD_PRODUCAO[Produção Petróleo (bbl/d)]<>0)
+
+
+// CALCULATE COM FILTER E DATAS
+//===================================================================================================
+total bbl/d = 
+VAR vFiltroData = DATE(2020,04,01)
+VAR vFiltroData1 = DATE(2020,04,30)
+
+RETURN
+CALCULATE(sum(BD_PRODUCAO[Produção Petróleo (bbl/d)]),
+FILTER(dCalendario,
+        dCalendario[Date] >= vFiltroData && DCalendario[Date] <= vFiltroData1),BD_PRODUCAO[Produção Petróleo (bbl/d)]<>0)
+
+
+// CALCULATE COM EXPRESSAO
+//===================================================================================================
+total voos atrasados = CALCULATE([Total de passageiros], BD[Status]="Atrasado")
+
+// CALCULATE COM PERIODO ANTERIOR TEMPORAL ANO ANTERIOR
+//===================================================================================================
+Medida = CALCULATE([total vendas], SAMEPERIODLASTYEAR(DCalendario[Data]))
+
+
+// calculando porcentagem de vendas
+//===================================================================================================
+var total = [total de vendas]
+var totalGeral = CALCULATE([total de vendas], ALL(registro_livros_marketing[Categoria]))
+VAR PORCEN = DIVIDE(total,totalGeral,0)
+RETURN PORCEN
+
+
+// calculate com filter
+//===================================================================================================
+calcula fantasia somente = 
+                CALCULATE([total de vendas],
+                 FILTER(registro_livros_marketing, registro_livros_marketing[Categoria]="Fantasia"))
+
+
+
+// calculate com filter  e IF
+//===================================================================================================
+Fantasia Vendas = IF(not ISBLANK(CALCULATE([total de vendas],
+                FILTER('registro_livros_marketing',
+                'registro_livros_marketing'[Categoria] = "Fantasia"))),
+                [calcula fantasia somente],"----")
+
+
+// calculate com keep filter
+//===================================================================================================
+Medida pg 6 total vendas FANTASIAS = 
+                                CALCULATE([total de vendas],
+                                KEEPFILTERS(registro_livros_marketing[Categoria]
+                                 in {"Fantasia", "Mitologia e Fantasia"}))
+
+
+// calculate com filter keep e valor -
+//===================================================================================================
+Medida pg 6 total vendas FANTASIAS = 
+                                if(not ISBLANK(CALCULATE([total de vendas],
+                                KEEPFILTERS(registro_livros_marketing[Categoria]
+                                in {"Fantasia", "Mitologia e Fantasia"}))),[total de vendas],"-")
+
+
+
+
